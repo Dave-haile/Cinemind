@@ -1,0 +1,25 @@
+# Virtual environment
+.venv/
+env/
+venv/
+
+# Python cache and compiled files
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Instance folder (contains local configuration/databases)
+instance/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Environment variables (optional, depending on your setup)
+.env
+.flaskenv
+
+# Editor-specific files (e.g., VS Code, PyCharm)
+.idea/
+.vscode/
