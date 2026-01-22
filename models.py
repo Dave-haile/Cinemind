@@ -21,6 +21,14 @@ class User(db.Model):
     watch_history = db.relationship("WatchHistory", backref="user", lazy=True)
     watchlist = db.relationship("Watchlist", backref="user", lazy=True)
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "username": self.username,
+            "email": self.email,
+            "created_at": self.created_at.isoformat() if self.created_at else None
+        }
+
 
 class Movie(db.Model):
     __tablename__ = "movies"
@@ -31,6 +39,8 @@ class Movie(db.Model):
     release_year = db.Column(db.Integer)
     duration = db.Column(db.Integer)
     rating_avg = db.Column(db.Float, default=0.0)
+    video_url = db.Column(db.String(255), nullable=True)
+    cover_img = db.Column(db.String(255), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     genres = db.relationship("Genre", secondary=movie_genres, back_populates="movies")
@@ -65,6 +75,8 @@ class WatchHistory(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     movie_id = db.Column(db.Integer, db.ForeignKey("movies.id"), nullable=False)
+    last_position = db.Column(db.Integer, default=0)  # timestamp in seconds
+
 
 
 class Watchlist(db.Model):
