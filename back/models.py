@@ -41,7 +41,13 @@ class Movie(db.Model):
     rating_avg = db.Column(db.Float, default=0.0)
     video_url = db.Column(db.String(255), nullable=True)
     cover_img = db.Column(db.String(255), nullable=True)
+    public_id = db.Column(db.String(12), unique=True, index=True, nullable=False)
+    trailerUrl=db.Column(db.String(255), nullable=True)
+    backdrop = db.Column(db.String(255), nullable=True)
+    director = db.Column(db.String(255), nullable=True)
+    cast = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
 
     genres = db.relationship("Genre", secondary=movie_genres, back_populates="movies")
     ratings = db.relationship("Rating", backref="movie", lazy=True)
