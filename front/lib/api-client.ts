@@ -73,8 +73,9 @@
 // export const apiClient = new ApiClient();
 
 // lib/api-client.ts
-import { API_BASE_URL } from './config';
-import { ApiError } from '@/types/api';
+
+import { API_BASE_URL } from "./config";
+import { ApiError } from "@/types/api";
 
 interface RequestOptions extends RequestInit {
   timeout?: number;
@@ -95,7 +96,7 @@ export class ApiClient {
       try {
         errorData = await response.json();
       } catch {
-        errorData = { message: 'An error occurred' };
+        errorData = { message: "An error occurred" };
       }
 
       const error: ApiError = {
@@ -111,13 +112,13 @@ export class ApiClient {
 
   private async request<T>(
     endpoint: string,
-    options: RequestOptions = {}
+    options: RequestOptions = {},
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
-    
+
     // Default headers
     const defaultHeaders: Record<string, string> = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...options.headers,
     };
 
@@ -125,7 +126,7 @@ export class ApiClient {
     const controller = new AbortController();
     const timeoutId = setTimeout(
       () => controller.abort(),
-      options.timeout || 10000
+      options.timeout || 10000,
     );
 
     try {
@@ -133,7 +134,7 @@ export class ApiClient {
         ...options,
         headers: defaultHeaders,
         signal: controller.signal,
-        credentials: 'include', // Important for cookies
+        credentials: "include", // Important for cookies
       });
 
       clearTimeout(timeoutId);
@@ -141,46 +142,59 @@ export class ApiClient {
     } catch (error: unknown) {
       clearTimeout(timeoutId);
 
-      if (error instanceof Error && error.name === 'AbortError') {
-        throw { message: 'Request timeout', status: 408 };
+      if (error instanceof Error && error.name === "AbortError") {
+        throw { message: "Request timeout", status: 408 };
       }
 
-      const errorMessage = error instanceof Error ? error.message : 'Network error';
+      const errorMessage =
+        error instanceof Error ? error.message : "Network error";
       throw { message: errorMessage, status: 500 };
     }
   }
 
   // HTTP Methods
   async get<T>(endpoint: string, options?: RequestOptions): Promise<T> {
-    return this.request<T>(endpoint, { ...options, method: 'GET' });
+    return this.request<T>(endpoint, { ...options, method: "GET" });
   }
 
-  async post<T>(endpoint: string, data?: unknown, options?: RequestOptions): Promise<T> {
+  async post<T>(
+    endpoint: string,
+    data?: unknown,
+    options?: RequestOptions,
+  ): Promise<T> {
     return this.request<T>(endpoint, {
       ...options,
-      method: 'POST',
+      method: "POST",
       body: data ? JSON.stringify(data) : undefined,
     });
   }
 
-  async put<T>(endpoint: string, data?: unknown, options?: RequestOptions): Promise<T> {
+  async put<T>(
+    endpoint: string,
+    data?: unknown,
+    options?: RequestOptions,
+  ): Promise<T> {
     return this.request<T>(endpoint, {
       ...options,
-      method: 'PUT',
+      method: "PUT",
       body: data ? JSON.stringify(data) : undefined,
     });
   }
 
-  async patch<T>(endpoint: string, data?: unknown, options?: RequestOptions): Promise<T> {
+  async patch<T>(
+    endpoint: string,
+    data?: unknown,
+    options?: RequestOptions,
+  ): Promise<T> {
     return this.request<T>(endpoint, {
       ...options,
-      method: 'PATCH',
+      method: "PATCH",
       body: data ? JSON.stringify(data) : undefined,
     });
   }
 
   async delete<T>(endpoint: string, options?: RequestOptions): Promise<T> {
-    return this.request<T>(endpoint, { ...options, method: 'DELETE' });
+    return this.request<T>(endpoint, { ...options, method: "DELETE" });
   }
 }
 

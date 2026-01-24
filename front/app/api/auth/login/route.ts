@@ -16,7 +16,7 @@
 
 //     const res = await fetch(`${API_BASE_URL}/auth/login`, {
 //       method: "POST",
-//       headers: { 
+//       headers: {
 //         "Content-Type": "application/json",
 //       },
 //       body: JSON.stringify(body),
@@ -31,7 +31,7 @@
 //       );
 //     }
 
-//     return NextResponse.json(data, { 
+//     return NextResponse.json(data, {
 //       status: res.status,
 //       headers: {
 //         // Forward any cookies from Flask
@@ -41,7 +41,7 @@
 
 //   } catch (error) {
 //     console.error('Login API error:', error);
-    
+
 //     return NextResponse.json(
 //       { error: 'Internal server error' },
 //       { status: 500 }
@@ -68,56 +68,24 @@
 //     }
 // }
 // app/api/auth/login/route.ts
-import { NextRequest, NextResponse } from 'next/server';
-import { apiClient } from '@/lib/api-client';
-import { setAuthCookies } from '@/lib/auth';
-import { ApiError, AuthResponse } from '@/types/api';
+import { NextRequest, NextResponse } from "next/server";
+import { serverFetch } from "@/lib/server-api";
+import { setAuthToken } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
-  try {
-    const body = await req.json();
-    
-    // Validate required fields
-    if (!body.email || !body.password) {
-      return NextResponse.json(
-        { error: 'Email and password are required' },
-        { status: 400 }
-      );
-    }
+  const body = await req.json();
 
-    // Call Flask backend
-    const response = await apiClient.post<AuthResponse>('/auth/login', body);
-    
-    // Set cookies from response
-    if (response.token || response.access_token) {
-      const token = response.token || response.access_token;
-      if (token && response.user) {
-        await setAuthCookies(token, response.user);
-      }
-    }
+  const res = await serverFetch("/auth/login", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
 
-    // Forward Flask cookies if present
-    const nextResponse = NextResponse.json(response, { status: 200 });
-    
-    // You can also forward specific cookies from Flask if needed
-    // const setCookieHeader = req.headers.get('set-cookie');
-    // if (setCookieHeader) {
-    //   nextResponse.headers.set('set-cookie', setCookieHeader);
-    // }
+  const data = await res.json();
 
-    return nextResponse;
-
-  } catch (error: unknown) {
-    console.error('Login error:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Login failed'
-    const errorStatus = (error as ApiError)?.status || 500;
-    const errorDetails = (error as ApiError)?.errors
-    return NextResponse.json(
-      { 
-        error: errorMessage || 'Login failed',
-        ...(errorDetails && { errors: errorDetails })
-      },
-      { status: errorStatus }
-    );
+  if (!res.ok) {
+    return NextResponse.json(data, { status: res.status });
   }
+
+  await setAuthToken(data.access_token);
+  return NextResponse.json({ success: true });
 }
