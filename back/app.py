@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from config import Config
 from extensions import db, jwt
@@ -21,7 +22,6 @@ def create_app():
     app.register_blueprint(actions_bp)
     app.register_blueprint(rec_bp)
     app.register_blueprint(user_bp)
-
 
     @app.route("/")
     def index():
