@@ -27,7 +27,8 @@ const Upcoming: React.FC = () => {
               className="group relative overflow-hidden rounded-3xl bg-neutral-900 border border-neutral-800 flex flex-col sm:flex-row h-full"
             >
               <div className="relative w-full sm:w-2/5 aspect-3/4 sm:aspect-auto overflow-hidden">
-                <img
+                <Image
+                  fill
                   src={movie.imageUrl}
                   alt={movie.title}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"

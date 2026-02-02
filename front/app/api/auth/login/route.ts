@@ -68,9 +68,10 @@
 //     }
 // }
 // app/api/auth/login/route.ts
+
 import { NextRequest, NextResponse } from "next/server";
 import { serverFetch } from "@/lib/server-api";
-import { setAuthToken } from "@/lib/auth";
+import { setAuthToken } from "@/lib/auth-server";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -87,5 +88,6 @@ export async function POST(req: NextRequest) {
   }
 
   await setAuthToken(data.access_token);
+
   return NextResponse.json({ success: true });
 }

@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { serverFetch } from "@/lib/server-api";
-import { setAuthToken } from "@/lib/auth-server";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
 
-  const res = await serverFetch("/auth/register", {
+  const res = await serverFetch("/auth/resend-code", {
     method: "POST",
     body: JSON.stringify(body),
   });
@@ -16,6 +15,5 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(data, { status: res.status });
   }
 
-  // Registration initiated successfully - user needs to verify email before account is created
   return NextResponse.json({ success: true, message: data.message });
 }

@@ -29,7 +29,7 @@ const Features: React.FC = () => {
               <h3 className="text-xl font-bold mb-3 text-white">
                 {feature.title}
               </h3>
-              <p className="text-gray-400 leading-relaxed leading-relaxed">
+              <p className="text-gray-400 leading-relaxed">
                 {feature.description}
               </p>
             </div>

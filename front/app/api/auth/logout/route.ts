@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
 import { apiClient } from '@/lib/api-client';
-import { clearAuthCookies } from '@/lib/auth';
+import { clearAuth } from '@/lib/auth-server';
 
 export async function POST() {
   try {
     await apiClient.post('/auth/logout', {});
-    
-    await clearAuthCookies();
-    
+
+    await clearAuth();
+
     return NextResponse.json(
       { message: 'Logged out successfully' },
       { status: 200 }
@@ -15,8 +15,8 @@ export async function POST() {
 
   } catch (error: unknown) {
     console.error('Logout error:', error);
-    await clearAuthCookies();
-    
+    await clearAuth();
+
     return NextResponse.json(
       { error: 'Logged out locally' },
       { status: 200 }

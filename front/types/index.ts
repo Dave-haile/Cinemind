@@ -1,18 +1,27 @@
 
 export interface Movie {
   id: number;
-  public_id: string;
   title: string;
-  rating: number;
-  genre: string;
-  imageUrl: string;
-  year: number;
-  synopsis?: string;
-  cast?: string[];
-  backdropUrl?: string;
-  duration?: string;
+  description?: string;
+  release_year?: number;
+  duration?: number;
+  rating_avg?: number;
+  video_url?: string;
+  cover_img?: string;
+  public_id: string;
+  trailerUrl?: string;
+  backdrop?: string;
+  director?: string;
+  cast?: CastMember[];
+  created_at?: string;
+  genres: string[];
 }
 
+export interface CastMember {
+  name: string;
+  character: string;
+  image: string;
+}
 export interface Feature {
   title: string;
   description: string;

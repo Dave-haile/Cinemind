@@ -51,7 +51,7 @@ def get_movies():
 
     # 🎭 Filter by genre
     if genre:
-        query = query.join(Movie.genres).filter(Genre.name == genre)
+        query = query.join(Movie.genres).filter(Genre.name == genre)  # pyright: ignore[reportArgumentType]
 
     # 📄 Pagination
     pagination = query.paginate(page=page, per_page=limit, error_out=False)
@@ -99,18 +99,18 @@ def watch_movie(public_id):
 
         history = WatchHistory.query.filter_by(user_id=user_id, movie_id=movie_id).first()
         if not history:
-            history = WatchHistory(user_id=user_id, movie_id=movie_id, last_position=position)
+            history = WatchHistory(user_id=user_id, movie_id=movie_id, last_position=position)  # pyright: ignore[reportCallIssue]
             db.session.add(history)
         else:
             history.last_position = position
-            history.watched_at = datetime.utcnow()
+            history.watched_at = datetime.utcnow()  # pyright: ignore[reportAttributeAccessIssue]
         db.session.commit()
         return jsonify({"msg": "Progress saved"}), 200
 
     # GET: log watch if not exists
     history = WatchHistory.query.filter_by(user_id=user_id, movie_id=movie_id).first()
     if not history:
-        history = WatchHistory(user_id=user_id, movie_id=movie_id)
+        history = WatchHistory(user_id=user_id, movie_id=movie_id)  # pyright: ignore[reportCallIssue]
         db.session.add(history)
         db.session.commit()
 
@@ -129,7 +129,12 @@ def watch_movie(public_id):
 
 @movies_bp.route("/<string:public_id>", methods=["GET"])
 def get_movie(public_id):
-    m = Movie.query.filter_by(public_id=public_id).first_or_404()
+    # Try to find by public_id first, then by id if public_id is numeric
+    m = Movie.query.filter_by(public_id=public_id).first()
+    if not m and public_id.isdigit():
+        m = Movie.query.filter_by(id=int(public_id)).first()
+    if not m:
+        return {"error": "Movie not found"}, 404
     return jsonify({
         "id": m.id,
         "title": m.title,
@@ -195,18 +200,18 @@ def create_movie():
     
     # Create movie with all available fields
     movie = Movie(
-        title=data["title"],
-        description=data.get("description"),
-        release_year=data.get("release_year"),
-        duration=data.get("duration"),
-        rating_avg=data.get("rating_avg", 0.0),  # Default to 0.0
-        video_url=data.get("video_url"),
-        cover_img=data.get("cover_img"),
-        public_id=generate_unique_public_id(),
-        trailerUrl=data.get("trailerUrl"),
-        backdrop=data.get("backdrop"),
-        director=data.get("director"),
-        cast=cast_json,  # Store as JSON string
+        title=data["title"],  # pyright: ignore[reportCallIssue]
+        description=data.get("description"),  # pyright: ignore[reportCallIssue]
+        release_year=data.get("release_year"),  # pyright: ignore[reportCallIssue]
+        duration=data.get("duration"),  # pyright: ignore[reportCallIssue]
+        rating_avg=data.get("rating_avg", 0.0),  # Default to 0.0  # pyright: ignore[reportCallIssue]
+        video_url=data.get("video_url"),  # pyright: ignore[reportCallIssue]
+        cover_img=data.get("cover_img"),  # pyright: ignore[reportCallIssue]
+        public_id=generate_unique_public_id(),  # pyright: ignore[reportCallIssue]
+        trailerUrl=data.get("trailerUrl"),  # pyright: ignore[reportCallIssue]
+        backdrop=data.get("backdrop"),  # pyright: ignore[reportCallIssue]
+        director=data.get("director"),  # pyright: ignore[reportCallIssue]
+        cast=cast_json,  # Store as JSON string  # pyright: ignore[reportCallIssue]
     )
     
     # Handle genres
@@ -214,7 +219,7 @@ def create_movie():
     for name in genre_names:
         genre = Genre.query.filter_by(name=name).first()
         if not genre:
-            genre = Genre(name=name)
+            genre = Genre(name=name)  # pyright: ignore[reportCallIssue]
             db.session.add(genre)  # Add new genre to session
         movie.genres.append(genre)
     
@@ -236,9 +241,9 @@ def create_movie():
             "trailerUrl": movie.trailerUrl,
             "backdrop": movie.backdrop,
             "director": movie.director,
-            "cast": movie.cast_list if hasattr(movie, 'cast_list') else json.loads(movie.cast) if movie.cast else [],
+            "cast": json.loads(movie.cast) if movie.cast else [],  # pyright: ignore[reportCallIssue]
             "created_at": movie.created_at.isoformat() if movie.created_at else None,
-            "genres": [genre.name for genre in movie.genres]
+            "genres": [genre.name for genre in movie.genres]  # pyright: ignore[reportGeneralTypeIssues]
         }
         
         return jsonify({
@@ -263,7 +268,7 @@ def trending_movies():
             "id": m.id,
             "title": m.title,
             "rating_avg": m.rating_avg,
-            "genres": [g.name for g in m.genres]
+            "genres": [g.name for g in m.genres]  # pyright: ignore[reportGeneralTypeIssues]
         } for m in movies
     ])
 @movies_bp.route("/top-rated", methods=["GET"])

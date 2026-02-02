@@ -1,9 +1,6 @@
-// app/api/movies/[id]/route.ts - Single movie operations
 import { NextRequest, NextResponse } from 'next/server';
 import { apiClient } from '@/lib/api-client';
-import { getAuthToken } from '@/lib/auth';
-import { Movie } from '@/types';
-import { ApiError } from '@/types/api';
+import { getAuthToken } from '@/lib/auth-server';
 
 interface RouteParams {
   params: {
@@ -11,20 +8,20 @@ interface RouteParams {
   };
 }
 
-// GET /api/movies/[id] - Get single movie
 export async function GET(
   req: NextRequest,
-  { params }: RouteParams
+  { params }: { params: { public_id: string } }
 ) {
   try {
+    const resolvedParams = await params;
     const token = await getAuthToken();
-    
+
     const headers: Record<string, string> = {};
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }
 
-    const movie = await apiClient.get<Movie>(`/movies/${params.public_id}`, {
+    const movie = await apiClient.get(`/movies/${resolvedParams.public_id}`, {
       headers,
     });
 
@@ -34,7 +31,9 @@ export async function GET(
     console.error('Fetch movie error:', error);
 
     const errorMessage = error instanceof Error ? error.message : 'Movie not found';
-    const errorStatus = (error as ApiError)?.status || 404;
+    const errorStatus = (error && typeof error === 'object' && 'status' in error && typeof error.status === 'number')
+      ? error.status
+      : 404;
 
     return NextResponse.json(
       { error: errorMessage },
@@ -43,73 +42,25 @@ export async function GET(
   }
 }
 
-// PUT /api/movies/[id] - Update movie
 export async function PUT(
-  req: NextRequest,
-  { params }: RouteParams
+  _req: NextRequest, // eslint-disable-line @typescript-eslint/no-unused-vars
+  { params: _params }: RouteParams // eslint-disable-line @typescript-eslint/no-unused-vars
 ) {
-  try {
-    const body = await req.json();
-    const token = await getAuthToken();
-    
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-    };
-    
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
-
-    const movie = await apiClient.put<Movie>(`/movies/${params.public_id}`, body, {
-      headers,
-    });
-
-    return NextResponse.json(movie, { status: 200 });
-
-  } catch (error: unknown) {
-    console.error('Update movie error:', error);
-
-    const errorMessage = error instanceof Error ? error.message : 'Failed to update movie';
-    const errorStatus = (error as ApiError)?.status || 400;
-
-    return NextResponse.json(
-      { error: errorMessage },
-      { status: errorStatus }
-    );
-  }
+  // PUT endpoint not implemented in backend
+  return NextResponse.json(
+    { error: 'Update movie endpoint not implemented' },
+    { status: 501 }
+  );
 }
 
-// DELETE /api/movies/[id] - Delete movie
+// DELETE /api/movies/[public_id] - Delete movie
 export async function DELETE(
-  req: NextRequest,
-  { params }: RouteParams
+  _req: NextRequest, // eslint-disable-line @typescript-eslint/no-unused-vars
+  { params: _params }: RouteParams // eslint-disable-line @typescript-eslint/no-unused-vars
 ) {
-  try {
-    const token = await getAuthToken();
-    
-    const headers: Record<string, string> = {};
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
-
-    await apiClient.delete(`/movies/${params.public_id}`, {
-      headers,
-    });
-
-    return NextResponse.json(
-      { message: 'Movie deleted successfully' },
-      { status: 200 }
-    );
-
-  } catch (error: unknown) {
-    console.error('Delete movie error:', error);
-
-    const errorMessage = error instanceof Error ? error.message : 'Failed to delete movie';
-    const errorStatus = (error as ApiError)?.status || 400;
-
-    return NextResponse.json(
-      { error: errorMessage },
-      { status: errorStatus }
-    );
-  }
+  // DELETE endpoint not implemented in backend
+  return NextResponse.json(
+    { error: 'Delete movie endpoint not implemented' },
+    { status: 501 }
+  );
 }

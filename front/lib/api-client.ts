@@ -92,7 +92,11 @@ export class ApiClient {
 
   private async handleResponse<T>(response: Response): Promise<T> {
     if (!response.ok) {
-      let errorData: { message?: string; errors?: Record<string, string[]> };
+      let errorData: {
+        message?: string;
+        error?: string;
+        errors?: Record<string, string[]>;
+      };
       try {
         errorData = await response.json();
       } catch {
@@ -100,7 +104,10 @@ export class ApiClient {
       }
 
       const error: ApiError = {
-        message: errorData.message || `HTTP error! status: ${response.status}`,
+        message:
+          errorData.message ||
+          errorData.error ||
+          `HTTP error! status: ${response.status}`,
         status: response.status,
         errors: errorData.errors,
       };

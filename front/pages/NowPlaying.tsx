@@ -4,6 +4,7 @@ import React from "react";
 import { Play, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { NOW_PLAYING_MOVIES } from "../constants";
+import Image from "next/image";
 
 const NowPlaying: React.FC = () => {
   return (
@@ -36,12 +37,13 @@ const NowPlaying: React.FC = () => {
               className="min-w-[300px] md:min-w-[450px] snap-start group relative rounded-3xl overflow-hidden bg-neutral-900 border border-neutral-800 transition-transform duration-500 hover:scale-[1.02]"
             >
               <div className="relative aspect-video overflow-hidden">
-                <img
+                <Image
+                  fill
                   src={movie.imageUrl}
                   alt={movie.title}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-black via-black/20 to-transparent" />
 
                 {/* Watch Now Button Overlay */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">

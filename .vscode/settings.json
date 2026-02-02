@@ -1,6 +1,8 @@
 {
-  "python.defaultInterpreterPath": "C:/Users/CrusherServer/OneDrive/Documents/DaveYencomad/Cinemind/back/venv/Scripts/python.exe",
-  "python.analysis.extraPaths": ["./back"],
+  "python.defaultInterpreterPath": "D:/SummerSchool2/Projects/Cinemind/back/venv/Scripts/python.exe",
+  "python.analysis.extraPaths": [
+    "./back"
+  ],
   "python.analysis.typeCheckingMode": "basic",
   "python.terminal.activateEnvironment": true,
   "python.analysis.includeFileSpecs": [
@@ -12,5 +14,15 @@
     "**/venv",
     "**/.git"
   ],
-  "python.analysis.cwd": "${workspaceFolder}/back"
+  "python.analysis.cwd": "${workspaceFolder}/back",
+  "cursorpyright.analysis.exclude": [
+    "**/node_modules",
+    "**/__pycache__",
+    "**/venv",
+    "**/.git"
+  ],
+  "cursorpyright.analysis.extraPaths": [
+    "./back"
+  ],
+  "cursorpyright.analysis.typeCheckingMode": "basic"
 }

@@ -5,7 +5,7 @@ import { setAuthToken } from "@/lib/auth-server";
 export async function POST(req: NextRequest) {
   const body = await req.json();
 
-  const res = await serverFetch("/auth/register", {
+  const res = await serverFetch("/auth/verify-email", {
     method: "POST",
     body: JSON.stringify(body),
   });
@@ -16,6 +16,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(data, { status: res.status });
   }
 
-  // Registration initiated successfully - user needs to verify email before account is created
-  return NextResponse.json({ success: true, message: data.message });
+  // After successful verification, set auth token and redirect to login
+  // Note: The backend now creates the user account during verification
+  return NextResponse.json({
+    success: true,
+    message: data.message,
+    redirect: "/login"
+  });
 }

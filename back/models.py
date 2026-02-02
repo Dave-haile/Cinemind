@@ -17,6 +17,10 @@ class User(db.Model):
     password_hash = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    is_verified = db.Column(db.Boolean, default=False)
+    email_code = db.Column(db.String(6), nullable=True)
+    email_code_expires = db.Column(db.DateTime, nullable=True)
+
     ratings = db.relationship("Rating", backref="user", lazy=True)
     watch_history = db.relationship("WatchHistory", backref="user", lazy=True)
     watchlist = db.relationship("Watchlist", backref="user", lazy=True)

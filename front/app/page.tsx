@@ -1,15 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import Hero from '../components/Hero';
-import Genres from '../components/Genres';
-import NowPlaying from '../components/NowPlaying';
-import Trending from '../components/Trending';
-import Upcoming from '../components/Upcoming';
-import Reviews from '../components/Reviews';
-import Features from '../components/Features';
-import Pricing from '../components/Pricing';
+import Hero from '../pages/Hero';
+import Genres from '../pages/Genres';
+import NowPlaying from '../pages/NowPlaying';
+import Trending from '../pages/Trending';
+import Upcoming from '../pages/Upcoming';
+import Reviews from '../pages/Reviews';
+import Features from '../pages/Features';
+import Pricing from '../pages/Pricing';
 import { Sparkles } from 'lucide-react';
+import MainLayout from '@/components/MainLayout';
 
 export default function HomePage() {
   const [recommendation, setRecommendation] = useState<string | null>(null);
@@ -37,7 +38,7 @@ export default function HomePage() {
   };
 
   return (
-    <>
+    <MainLayout>
       <Hero />
 
       {/* Statistics/Social Proof Section */}
@@ -63,8 +64,8 @@ export default function HomePage() {
             </div>
             <div className="flex-1 text-center md:text-left">
               <div className="flex items-center justify-center md:justify-start space-x-2 mb-2">
-                 <span className="bg-red-600/20 text-red-500 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest">Powered by Gemini</span>
-                 <h3 className="text-2xl font-bold text-white">AI Spotlight</h3>
+                <span className="bg-red-600/20 text-red-500 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest">Powered by Gemini</span>
+                <h3 className="text-2xl font-bold text-white">AI Spotlight</h3>
               </div>
               <p className="text-gray-400 mb-4">Not sure what to watch? Let our Gemini-powered engine decide for you.</p>
               {recommendation && (
@@ -99,7 +100,7 @@ export default function HomePage() {
 
       {/* Call to Action Section */}
       <section className="py-24 px-6">
-        <div className="max-w-5xl mx-auto rounded-[3rem] bg-gradient-to-br from-red-600 to-orange-500 p-12 md:p-20 text-center relative overflow-hidden">
+        <div className="max-w-5xl mx-auto rounded-[3rem] bg-linear-to-br from-red-600 to-orange-500 p-12 md:p-20 text-center relative overflow-hidden">
           <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }} />
           <div className="relative z-10">
             <h2 className="text-3xl md:text-5xl font-black text-white mb-6 leading-tight">
@@ -114,6 +115,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-    </>
+    </ MainLayout>
   );
 }

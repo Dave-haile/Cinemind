@@ -1,17 +1,15 @@
-import { cookies } from "next/headers";
-import { COOKIE_OPTIONS } from "./config";
-
-export async function setAuthToken(token: string) {
-  const store = await cookies();
-  store.set("auth_token", token, COOKIE_OPTIONS);
+export interface User {
+  id?: string;
+  email?: string;
+  name?: string;
+  [key: string]: string | undefined;
 }
 
-export async function clearAuth() {
-  const store = await cookies();
-  store.delete("auth_token");
-}
+export async function getCurrentUser(): Promise<User | null> {
+  const res = await fetch("/api/auth/me", {
+    cache: "no-store",
+  });
 
-export async function getAuthToken() {
-  const store = await cookies();
-  return store.get("auth_token")?.value || null;
+  if (!res.ok) return null;
+  return res.json();
 }

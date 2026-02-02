@@ -53,7 +53,7 @@ const Pricing: React.FC = () => {
                     key={fIdx}
                     className="flex items-center space-x-3 text-sm text-gray-300"
                   >
-                    <Check className="w-5 h-5 text-red-500 flex-shrink-0" />
+                    <Check className="w-5 h-5 text-red-500 shrink-0" />
                     <span>{feature}</span>
                   </li>
                 ))}

@@ -19,14 +19,14 @@ export const COOKIE_OPTIONS = {
   secure: process.env.NODE_ENV === "production",
   sameSite: "lax" as const,
   path: "/",
-  maxAge: 60 * 60 * 24 * 7,
+  maxAge: 60 * 60 * 24 * 30, // 30 days to match JWT token expiration
 };
 
 export const ENDPOINTS = {
   AUTH: {
     LOGIN: "/auth/login",
     REGISTER: "/auth/register",
-    ME: "/auth/me",
+    ME: "/user/me",
   },
   MOVIES: {
     SEARCH: "/movies/search",

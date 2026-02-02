@@ -17,7 +17,7 @@ const Genres: React.FC = () => {
               className="relative group overflow-hidden rounded-2xl h-24 flex items-center justify-center transition-all active:scale-95"
             >
               <div
-                className={`absolute inset-0 bg-gradient-to-br ${genre.color} opacity-20 group-hover:opacity-100 transition-opacity duration-500`}
+                className={`absolute inset-0 bg-linear-to-br ${genre.color} opacity-20 group-hover:opacity-100 transition-opacity duration-500`}
               />
               <div className="absolute inset-0 border border-white/5 group-hover:border-white/20 rounded-2xl transition-colors" />
               <div className="relative z-10 flex items-center space-x-3">

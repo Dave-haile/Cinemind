@@ -4,6 +4,7 @@ import React from "react";
 import { Star, Play } from "lucide-react";
 import Link from "next/link";
 import { MOVIES } from "../constants";
+import Image from "next/image";
 
 const Trending: React.FC = () => {
   return (
@@ -34,8 +35,9 @@ const Trending: React.FC = () => {
               className="group relative block"
             >
               {/* Poster Container */}
-              <div className="relative aspect-[2/3] overflow-hidden rounded-2xl bg-neutral-800 mb-4 transition-transform duration-500 group-hover:-translate-y-2">
-                <img
+              <div className="relative aspect-2/3 overflow-hidden rounded-2xl bg-neutral-800 mb-4 transition-transform duration-500 group-hover:-translate-y-2">
+                <Image
+                  fill
                   src={movie.imageUrl}
                   alt={movie.title}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
