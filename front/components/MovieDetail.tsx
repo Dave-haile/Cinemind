@@ -163,10 +163,12 @@ const MovieDetail = ({ publicId }: { publicId: string }) => {
 
               {/* Action Buttons */}
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
-                <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-[hsl(240_10%_4%)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(0_72%_51%)] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-[hsl(0_72%_51%)] text-[hsl(0_0%_100%)] hover:bg-[hsl(0_72%_51%/0.9)] h-11 px-8">
-                  <Play className="w-5 h-5 fill-current" />
-                  Watch Now
-                </button>
+                <Link href={`/watch/${publicId}`}>
+                  <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-[hsl(240_10%_4%)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(0_72%_51%)] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-[hsl(0_72%_51%)] text-[hsl(0_0%_100%)] hover:bg-[hsl(0_72%_51%/0.9)] h-11 px-8">
+                    <Play className="w-5 h-5 fill-current" />
+                    Watch Now
+                  </button>
+                </Link>
                 <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-[hsl(240_10%_4%)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(0_72%_51%)] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-[hsl(240_5%_18%)] bg-[hsl(240_10%_4%)] hover:bg-[hsl(45_93%_58%)] hover:text-[hsl(240_10%_4%)] h-11 px-8">
                   <Plus className="w-5 h-5" />
                   Add to Watchlist

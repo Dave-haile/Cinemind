@@ -1,6 +1,6 @@
 import { Star, Play } from "lucide-react";
 import Link from "next/link";
-import { Movie } from "@/app/movies/page";
+import { Movie } from "@/types";
 import Image from "next/image";
 
 interface MovieCardProps {

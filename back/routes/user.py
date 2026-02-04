@@ -10,7 +10,7 @@ user_bp = Blueprint("user", __name__, url_prefix="/user")
 def me():
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
-    return jsonify(user.to_dict())
+    return jsonify(user.to_dict())  # pyright: ignore[reportOptionalMemberAccess]
 
 
 @user_bp.route("/stats", methods=["GET"])

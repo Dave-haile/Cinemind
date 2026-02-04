@@ -1,3 +1,4 @@
+import { serverFetch } from "@/lib/server-api";
 import { GoogleGenAI } from "@google/genai";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -17,6 +18,23 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { error: "Failed to get a recommendation. Please try again later." },
       { status: 500 }
+    );
+  }
+}
+
+export async function GET() {
+  try {
+    const response = await serverFetch('/movies/most-watched', {
+      method: 'GET',
+    });
+    const data = await response.json();
+    console.log("🎬 Most watched movies:", data);
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error("❌ Movie fetch failed:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch movies" },
+      { status: 500 },
     );
   }
 }

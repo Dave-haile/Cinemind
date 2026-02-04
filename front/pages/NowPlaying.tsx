@@ -1,12 +1,25 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Play, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { NOW_PLAYING_MOVIES } from "../constants";
 import Image from "next/image";
+import { Movie } from "@/types";
 
 const NowPlaying: React.FC = () => {
+  const getNowPlayingMovies = async () => {
+    const response = await fetch('api/recommend', {
+      method: 'GET',
+    });
+    const data = await response.json();
+    console.log("data", data);
+  }
+  const [nowPlayingMovies, setNowPlayingMovies] = useState<Movie[]>([]);
+  useEffect(() => {
+    getNowPlayingMovies();
+  }, []);
+  console.log("nowPlayingMovies", nowPlayingMovies);
   return (
     <section id="now-playing" className="py-24 bg-black overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">

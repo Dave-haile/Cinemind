@@ -134,10 +134,10 @@ def verify_email():
 
         # Code is valid - create the user account
         user = User(
-            username=registration_data['username'],
-            email=registration_data['email'],
-            password_hash=registration_data['password_hash'],
-            is_verified=True
+            username=registration_data['username'],  # pyright: ignore[reportCallIssue]
+            email=registration_data['email'],  # pyright: ignore[reportCallIssue]
+            password_hash=registration_data['password_hash'],  # pyright: ignore[reportCallIssue]
+            is_verified=True  # pyright: ignore[reportCallIssue]
         )
 
         db.session.add(user)

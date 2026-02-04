@@ -15,7 +15,7 @@ def rate_movie():
     if rating:
         rating.score = data["score"]
     else:
-        rating = Rating(user_id=user_id, movie_id=data["movie_id"], score=data["score"])
+        rating = Rating(user_id=user_id, movie_id=data["movie_id"], score=data["score"])  # pyright: ignore[reportCallIssue]
         db.session.add(rating)
 
     db.session.commit()
@@ -28,7 +28,7 @@ def watch_movie():
     user_id = int(get_jwt_identity())
     data = request.get_json()
 
-    entry = WatchHistory(user_id=user_id, movie_id=data["movie_id"])
+    entry = WatchHistory(user_id=user_id, movie_id=data["movie_id"])  # pyright: ignore[reportCallIssue]
     db.session.add(entry)
     db.session.commit()
 
@@ -44,7 +44,7 @@ def add_watchlist():
     if exists:
         return jsonify({"message": "Already in watchlist"}), 200
 
-    entry = Watchlist(user_id=user_id, movie_id=data["movie_id"])
+    entry = Watchlist(user_id=user_id, movie_id=data["movie_id"])  # pyright: ignore[reportCallIssue]
     db.session.add(entry)
     db.session.commit()
 

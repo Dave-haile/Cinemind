@@ -1,7 +1,7 @@
-import datetime
+from datetime import datetime
 import json
 from lib.generateID import generate_unique_public_id
-from flask import Blueprint, jsonify, request, send_from_directory
+from flask import Blueprint, jsonify, redirect, request, send_from_directory
 from sqlalchemy import func
 from extensions import db
 from models import Movie, Genre, WatchHistory
@@ -83,7 +83,7 @@ def get_movies():
         ]
     })
 
-@movies_bp.route("/watch/<string:public_id>", methods=["GET"])
+@movies_bp.route("/watch/<string:public_id>", methods=["GET", "POST"])
 @jwt_required()
 def watch_movie(public_id):
     user_id = get_jwt_identity()
@@ -119,13 +119,31 @@ def watch_movie(public_id):
         return {"msg": "Video not available"}, 404
 
     # Check if it's a remote URL (starts with http/https)
-    # if movie.video_url.startswith(('http://', 'https://')):
-    #     return redirect(movie.video_url)
+    if movie.video_url.startswith(('http://', 'https://')):
+        return jsonify({
+            "id": movie.id,
+                "title": movie.title,
+                "description": movie.description,
+                "release_year": movie.release_year,
+                "duration": movie.duration,
+                "rating_avg": movie.rating_avg,
+                "video_url": movie.video_url,
+                "cover_img": movie.cover_img,
+                "public_id": movie.public_id,
+                "trailerUrl": movie.trailerUrl,
+                "backdrop": movie.backdrop,
+                "director": movie.director,
+                "cast": json.loads(movie.cast) if movie.cast else [],
+                "created_at": movie.created_at.isoformat() if movie.created_at else None,
+                "genres": [genre.name for genre in movie.genres]
+        })
 
     # Otherwise, serve as local file
     folder = "static/videos"
     filename = movie.video_url.split("/")[-1]
-    return send_from_directory(folder, filename), 201
+    # Return the video file with a 200 OK so the frontend <video> element
+    # (proxied through /api/watch) can stream it correctly.
+    return send_from_directory(folder, filename), 200
 
 @movies_bp.route("/<string:public_id>", methods=["GET"])
 def get_movie(public_id):
@@ -152,35 +170,6 @@ def get_movie(public_id):
         "created_at": m.created_at.isoformat() if m.created_at else None,
         "genres": [genre.name for genre in m.genres]
     })
-
-
-# @movies_bp.route("", methods=["POST"])
-# @jwt_required()
-# def create_movie():
-#     data = request.get_json()
-
-#     movie = Movie(
-#         title=data["title"],
-#         description=data.get("description"),
-#         release_year=data.get("release_year"),
-#         duration=data.get("duration"),
-#         video_url=data.get("video_url"),
-#         cover_img= data.get("cover_img"),
-#         backdrop = data.get("backdrop"),
-#         public_id = generate_unique_public_id(),
-#     )
-
-#     genre_names = data.get("genres", [])
-#     for name in genre_names:
-#         genre = Genre.query.filter_by(name=name).first()
-#         if not genre:
-#             genre = Genre(name=name)
-#         movie.genres.append(genre)
-
-#     db.session.add(movie)
-#     db.session.commit()
-
-#     return jsonify({"message": "Movie created"}), 201
 
 @movies_bp.route("", methods=["POST"])
 @jwt_required()
@@ -283,3 +272,76 @@ def top_rated_movies():
             "genres": [g.name for g in m.genres]
         } for m in movies
     ])
+
+@movies_bp.route("/most-watched", methods=["GET"])
+def most_watched_movies():
+    # Get query parameters for pagination and filtering
+    page = request.args.get("page", 1, type=int)
+    limit = request.args.get("limit", 10, type=int)
+    min_watches = request.args.get("min_watches", 1, type=int)  # Minimum watch count to include
+
+    # Create a subquery to count watches per movie
+    watch_counts = db.session.query(
+        WatchHistory.movie_id,
+        func.count(WatchHistory.id).label('watch_count')
+    ).group_by(WatchHistory.movie_id).having(
+        func.count(WatchHistory.id) >= min_watches
+    ).subquery()
+
+    # Query movies joined with watch counts, ordered by watch count
+    query = Movie.query.join(
+        watch_counts,
+        Movie.id == watch_counts.c.movie_id
+    ).order_by(
+        watch_counts.c.watch_count.desc()
+    )
+
+    # Apply pagination
+    pagination = query.paginate(page=page, per_page=limit, error_out=False)
+    movies = pagination.items
+
+    # Get watch counts for these movies
+    movie_ids = [m.id for m in movies]
+    watch_count_map = {}
+    if movie_ids:
+        counts = db.session.query(
+            WatchHistory.movie_id,
+            func.count(WatchHistory.id).label('watch_count')
+        ).filter(
+            WatchHistory.movie_id.in_(movie_ids)
+        ).group_by(WatchHistory.movie_id).all()
+
+        watch_count_map = {count.movie_id: count.watch_count for count in counts}
+
+    # Format the response
+    results = []
+    for movie in movies:
+        watch_count = watch_count_map.get(movie.id, 0)
+        movie_data = {
+            "id": movie.id,
+            "title": movie.title,
+            "description": movie.description,
+            "release_year": movie.release_year,
+            "duration": movie.duration,
+            "rating_avg": movie.rating_avg,
+            "video_url": movie.video_url,
+            "cover_img": movie.cover_img,
+            "public_id": movie.public_id,
+            "trailerUrl": movie.trailerUrl,
+            "backdrop": movie.backdrop,
+            "director": movie.director,
+            "cast": json.loads(movie.cast) if movie.cast else [],
+            "created_at": movie.created_at.isoformat() if movie.created_at else None,
+            "genres": [genre.name for genre in movie.genres],
+            "watch_count": watch_count
+        }
+        results.append(movie_data)
+
+    return jsonify({
+        "page": page,
+        "limit": limit,
+        "total": pagination.total,
+        "pages": pagination.pages,
+        "min_watches": min_watches,
+        "results": results
+    })
