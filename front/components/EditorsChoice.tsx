@@ -138,8 +138,8 @@ const EditorsChoice = () => {
           )}
 
           <div className="flex flex-wrap gap-3 justify-center md:justify-start">
-            <Link href={`/movie/${movie.public_id || movie.id}`}>
-              <button className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-[hsl(240_10%_4%)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(0_72%_51%)] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-[hsl(0_72%_51%)] text-[hsl(0_0%_100%)] hover:bg-[hsl(0_72%_51%/0.9)] h-11 px-8 shadow-lg shadow-[hsl(0_72%_51%/0.25)]">
+            <Link href={`/watch/${movie.public_id || movie.id}`}>
+              <button className=" hover:cursor-pointer inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-[hsl(240_10%_4%)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(0_72%_51%)] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-[hsl(0_72%_51%)] text-[hsl(0_0%_100%)] hover:bg-[hsl(0_72%_51%/0.9)] h-11 px-8 shadow-lg shadow-[hsl(0_72%_51%/0.25)]">
                 <Play className="w-4 h-4 fill-current" />
                 Watch Now
               </button>

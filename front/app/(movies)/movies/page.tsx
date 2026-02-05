@@ -328,6 +328,7 @@ const Movies = () => {
 
 // List View Component
 import { Play, Clock } from "lucide-react";
+import Image from "next/image";
 
 interface MovieListItemProps {
   movie: Movie;
@@ -342,9 +343,10 @@ const MovieListItem = ({ movie, index }: MovieListItemProps) => {
       style={{ animationDelay: `${index * 50}ms` }}
     >
       {/* Thumbnail */}
-      <div className="relative w-24 md:w-32 aspect-[2/3] rounded-lg overflow-hidden flex-shrink-0">
-        <img
-          src={movie.cover_img}
+      <div className="relative w-24 md:w-32 aspect-2/3 rounded-lg overflow-hidden shrink-0">
+        <Image
+          fill
+          src={movie.cover_img || ""}
           alt={movie.title}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
